@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Mixpanel
 
 class MasterSettingsController: SettingsController {
     
@@ -16,6 +17,13 @@ class MasterSettingsController: SettingsController {
         navigationItem.title = "Settings"
         
         NotificationCenter.default.addObserver(self, selector: #selector(pureDarkModeChanged(notification:)), name:NSNotification.Name(rawValue: "updatePureDarkMode"), object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Track page view event
+        Mixpanel.mainInstance().track(event: "page_view", properties: ["page_name": "Settings"])
     }
     
     //tableView logic

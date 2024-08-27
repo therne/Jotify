@@ -10,6 +10,7 @@ import Blueprints
 import SwiftMessages
 import ViewAnimator
 import WidgetKit
+import Mixpanel
 
 class NoteCollectionController: UICollectionViewController {
     //update collection view when model changes
@@ -63,6 +64,13 @@ class NoteCollectionController: UICollectionViewController {
         cleanupOldNotes()
         
         NotificationCenter.default.addObserver(self, selector: #selector(pureDarkModeChanged(notification:)), name:NSNotification.Name(rawValue: "updatePureDarkMode"), object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Track page view event
+        Mixpanel.mainInstance().track(event: "page_view", properties: ["page_name": "Saved Notes"])
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -206,6 +214,9 @@ class NoteCollectionController: UICollectionViewController {
             if success! {
                 AnalyticsManager.logEvent(named: "note_deleted", description: "note_deleted")
                 
+                // Track note deletion event
+                Mixpanel.mainInstance().track(event: "note_deleted")
+                
                 //remove pending reminder since note has been deleted
                 if note.reminderTimestamp ?? 0 > 0 {
                     //is reminder
@@ -238,6 +249,10 @@ class NoteCollectionController: UICollectionViewController {
         
         self.present(activityVC, animated: true, completion: nil)
         AnalyticsManager.logEvent(named: "share_note", description: "share_note")
+        
+        // Track note sharing event
+        Mixpanel.mainInstance().track(event: "share_note")
+        
         SwiftMessages.hide()
     }
     
@@ -299,6 +314,9 @@ class NoteCollectionController: UICollectionViewController {
             DataManager.deleteNote(docID: noteCollection?.FBNotes[indexPath.row].id ?? "") { success in
                 //handle success here
                 AnalyticsManager.logEvent(named: "note_deleted", description: "note_deleted")
+                
+                // Track note deletion event
+                Mixpanel.mainInstance().track(event: "note_deleted")
             }
         }
         selectedCells = []
@@ -398,6 +416,10 @@ class NoteCollectionController: UICollectionViewController {
                 EditingData.currentNote = filteredNotes[indexPath.row]
             }
             AnalyticsManager.logEvent(named: "note_opened", description: "note_opened")
+            
+            // Track note opened event
+            Mixpanel.mainInstance().track(event: "note_opened")
+            
             navigationController?.pushViewController(controller, animated: true)
         }
     }
@@ -411,6 +433,9 @@ class NoteCollectionController: UICollectionViewController {
                     print("Deleting note because of old date.")
                     DataManager.deleteNote(docID: note.id) { success in
                         //handle success
+                        
+                        // Track note deletion event
+                        Mixpanel.mainInstance().track(event: "note_deleted", properties: ["reason": "old_date"])
                     }
                 }
             }

@@ -6,6 +6,7 @@
 //
 
 import FirebaseAuth
+import Mixpanel
 
 class AuthManager {
     
@@ -56,6 +57,10 @@ class AuthManager {
             UIApplication.shared.applicationIconBadgeNumber = 0
             //remove all pending reminders, when user logs out
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+            
+            // Add Mixpanel reset
+            Mixpanel.mainInstance().reset()
+            
         }
         catch { print("User already logged out") }
     }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Mixpanel
 
 class WelcomeViewOnboardingController: UIViewController {
     
@@ -59,6 +60,13 @@ class WelcomeViewOnboardingController: UIViewController {
         super.viewDidLoad()
         setStyle()
         setupContraints()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Track page view event
+        Mixpanel.mainInstance().track(event: "page_view", properties: ["page_name": "Welcome"])
     }
     
     func updateStatusBar(style: UIStatusBarStyle) {

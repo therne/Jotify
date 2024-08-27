@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Mixpanel
 
 class WriteNoteController: ToolbarViewController, UITextViewDelegate {
     
@@ -27,6 +28,9 @@ class WriteNoteController: ToolbarViewController, UITextViewDelegate {
         
         //show the most recent placeholder
         field.text = UserDefaults.standard.string(forKey: "placeholder")
+        
+        // Track page view event
+        Mixpanel.mainInstance().track(event: "page_view", properties: ["page_name": "Write Note"])
     }
     
     //life cycle
@@ -94,6 +98,12 @@ class WriteNoteController: ToolbarViewController, UITextViewDelegate {
             field.text = UserDefaults.standard.string(forKey: "placeholder")
             
             AnalyticsManager.logEvent(named: "note_created", description: "note_created")
+            
+            // Track note creation event
+            Mixpanel.mainInstance().track(event: "note_created", properties: [
+                "note_id": documentID ?? "",
+                "note_color": noteColor.getString()
+            ])
         }
         field.resignFirstResponder()
     }

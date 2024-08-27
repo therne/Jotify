@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Mixpanel
 
 class EditingController: ToolbarViewController, UITextViewDelegate {
     
@@ -36,6 +37,9 @@ class EditingController: ToolbarViewController, UITextViewDelegate {
         
         //disable swiping to create a new note when editing
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "disableSwipe"), object: nil)
+        
+        // Track page view event
+        Mixpanel.mainInstance().track(event: "page_view", properties: ["page_name": "Note Editing"])
     }
     
     override func viewWillDisappear(_ animated: Bool) {

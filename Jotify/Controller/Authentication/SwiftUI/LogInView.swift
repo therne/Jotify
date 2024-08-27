@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Mixpanel
 
 let authController = AuthenticationController()
 
@@ -58,6 +59,19 @@ struct LogInView: View {
                 OrTextView()
                 Button(action: {
                     authController.userDidSubmitLogIn(email: email, password: password)
+                    
+                    // Track login event
+                    Mixpanel.mainInstance().track(event: "login", properties: [
+                        "email": email,
+                        "login_date": Date()
+                    ])
+                    
+                    // Set user properties
+                    Mixpanel.mainInstance().people.set(properties: [
+                        "$email": email,
+                        "$name": email.components(separatedBy: "@").first ?? "",
+                        "Last Login Date": Date()
+                    ])
                 }) {
                     LoginButtonContent()
                 }
@@ -81,6 +95,10 @@ struct LogInView: View {
             .frame(
                 maxWidth: 500
             )
+        }
+        .onAppear {
+            // Track page view event
+            Mixpanel.mainInstance().track(event: "page_view", properties: ["page_name": "Login"])
         }
     }
 }

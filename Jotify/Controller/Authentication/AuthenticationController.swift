@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftUI
+import Mixpanel
 
 //superclass for authentication workflow
 class AuthenticationController: UIViewController {
@@ -35,6 +36,19 @@ class AuthenticationController: UIViewController {
                 //create referral link and upload it to settings doc in Firestore
                 ReferralManager().createReferralLink()
                 self.setRootViewController(duration: 0.2, vc: PageBoyController())
+                
+                Mixpanel.mainInstance().identify(distinctId: AuthManager().uid)
+                Mixpanel.mainInstance().people.set(properties: [
+                    "$email": email,
+                    "$name": email.components(separatedBy: "@").first ?? "",
+                    "Sign Up Date": Date()
+                ])
+                
+                // Track sign up event
+                Mixpanel.mainInstance().track(event: "sign_up", properties: [
+                    "email": email,
+                    "registration_data": Date()
+                ])
             }
         }
     }
@@ -50,6 +64,13 @@ class AuthenticationController: UIViewController {
                 User.updateSettings()
                 //change rootViewController to PageViewController w/ animation
                 self.setRootViewController(duration: 0.2, vc: PageBoyController())
+                
+                Mixpanel.mainInstance().identify(distinctId: AuthManager().uid)
+                Mixpanel.mainInstance().people.set(properties: [
+                    "$email": email,
+                    "$name": email.components(separatedBy: "@").first ?? "",
+                    "Last Login Date": Date()
+                ])
             }
         }
     }

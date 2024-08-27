@@ -8,6 +8,7 @@
 import Firebase
 import CoreData
 import AuthenticationServices
+import Mixpanel
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,6 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         FirebaseApp.configure()
+        
+        // Initialize Mixpanel
+        Mixpanel.initialize(token: "deadbeefdeadbeefdeadebeefdeadded", trackAutomaticEvents: true)
         
         //check to see if Apple credential revoked since last launch
         didAppleIDStateRevokeWhileTerminated()

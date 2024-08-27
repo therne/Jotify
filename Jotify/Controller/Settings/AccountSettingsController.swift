@@ -7,6 +7,9 @@
 
 import UIKit
 import SwiftUI
+/* Here's the added content */
+import Mixpanel
+/* End of added content */
 
 class AccountSettingsController: SettingsController {
     
@@ -158,6 +161,9 @@ class AccountSettingsController: SettingsController {
                                 DataManager.deleteUserSettings { success in
                                     print("Settings deleted: \(String(describing: success))")
                                 }
+                                
+                                /* Here's where we add Mixpanel reset */
+                                Mixpanel.mainInstance().reset()
                                 
                                 let alertController = UIAlertController(title: "Success", message: "User account and relevant data deleted.", preferredStyle: .alert)
                                 alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in

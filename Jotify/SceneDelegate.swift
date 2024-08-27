@@ -8,6 +8,7 @@
 import UIKit
 import SwiftUI
 import FirebaseDynamicLinks
+import Mixpanel
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, UNUserNotificationCenterDelegate {
     

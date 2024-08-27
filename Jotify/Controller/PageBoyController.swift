@@ -8,6 +8,7 @@
 import UIKit
 import Pageboy
 import AuthenticationServices
+import Mixpanel
 
 class PageBoyController: PageboyViewController, PageboyViewControllerDataSource {
     
@@ -70,6 +71,9 @@ class PageBoyController: PageboyViewController, PageboyViewControllerDataSource 
         view.backgroundColor = .clear
         
         setupNoteRetrieval()
+        
+        // Track page view event
+        Mixpanel.mainInstance().track(event: "page_view", properties: ["page_name": "Main"])
     }
     
     func setupNoteRetrieval() {

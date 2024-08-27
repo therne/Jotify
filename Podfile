@@ -21,6 +21,9 @@ target 'Jotify' do
   pod 'SPIndicator'
   pod 'SPPermissions/Notification'
   
+  # Add this line for Mixpanel
+  pod 'Mixpanel-swift'
+  
   post_install do |installer|
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
@@ -32,4 +35,3 @@ target 'Jotify' do
   end
   
 end
-

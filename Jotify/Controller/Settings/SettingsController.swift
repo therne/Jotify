@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Mixpanel
 
 //superclass for all settings controllers
 class SettingsController: UITableViewController {
@@ -33,6 +34,13 @@ class SettingsController: UITableViewController {
                 
         tableView.register(SettingsCell.self, forCellReuseIdentifier: "SettingsCell")
         tableView.register(SettingsSwitchCell.self, forCellReuseIdentifier: "SettingsSwitchCell")
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Track page view event
+        Mixpanel.mainInstance().track(event: "page_view", properties: ["page_name": "Settings"])
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
