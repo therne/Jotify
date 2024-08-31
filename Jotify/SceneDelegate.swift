@@ -7,7 +7,7 @@
 
 import UIKit
 import SwiftUI
-import FirebaseDynamicLinks
+import Airbridge
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, UNUserNotificationCenterDelegate {
     
@@ -84,44 +84,52 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, UNUserNotificationCente
     }
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        if let incomingUrl = userActivity.webpageURL {
-            print("Incoming URL is \(incomingUrl)")
-            DynamicLinks.dynamicLinks().handleUniversalLink(incomingUrl) { dynamicLink, error in
-                guard error == nil else {
-                    print("Found an error with dynamic link: \(error!.localizedDescription)")
-                    return
-                }
-                if let dynamicLink = dynamicLink {
-                    self.handleIncomingDynamicLink(dynamicLink)
-                }
+        if let userActivity = userActivity as? NSUserActivity {
+            let isHandled = Airbridge.handleDeeplink(userActivity: userActivity) { url in
+                // When the app is opened with an Airbridge deeplink
+                // Show proper content using url (YOUR_SCHEME://...)
+                self.handleDeeplink(url: url)
+            }
+            if isHandled {
+                return
             }
         }
+        // When the app is opened with other deeplink
+        // Use existing logic as it is
     }
     
     //App opened from background - used partially for widgets
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         print("Received a URL through a custom scheme...")
-        guard let urlinfo = URLContexts.first?.url else { return }
-        if let dynamicLink = DynamicLinks.dynamicLinks().dynamicLink(fromCustomSchemeURL: urlinfo) {
-            self.handleIncomingDynamicLink(dynamicLink)
-        } else {
-            maybePressedRecentNoteWidget(urlContexts: URLContexts)
+        guard let url = URLContexts.first?.url else { return }
+        let isHandled = Airbridge.handleDeeplink(url: url) { url in
+            // When the app is opened with an Airbridge deeplink
+            // Show proper content using url (YOUR_SCHEME://...)
+            self.handleDeeplink(url: url)
         }
-    }
-    
-    func handleIncomingDynamicLink(_ dynamicLink: DynamicLink) {
-        guard let url = dynamicLink.url else {
-            print("The dynamic link object has no url")
+        if isHandled {
             return
         }
+        // When the app is opened with other deeplink
+        // Use existing logic as it is
+        maybePressedRecentNoteWidget(urlContexts: URLContexts)
+    }
+    
+    func handleDeeplink(url: URL) {
+        // Handle the deeplink URL
+        // You can parse the URL and navigate to the appropriate screen or perform any other action
+        print("Handling deeplink: \(url)")
         
-        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-              let queryItems = components.queryItems else { return }
-        for queryItem in queryItems {
-            print("Parameter \(queryItem.name) has a value of \(queryItem.value ?? "")")
-            
-            //queryItem.value is the UID of the person who referral this person
-            UserDefaults.standard.set(queryItem.value, forKey: "referralId")
+        // Example: Extract referral ID from the URL
+        if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+           let queryItems = components.queryItems {
+            for queryItem in queryItems {
+                if queryItem.name == "referralId" {
+                    UserDefaults.standard.set(queryItem.value, forKey: "referralId")
+                    print("Referral ID: \(queryItem.value ?? "")")
+                    break
+                }
+            }
         }
     }
     

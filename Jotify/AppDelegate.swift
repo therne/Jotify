@@ -8,6 +8,7 @@
 import Firebase
 import CoreData
 import AuthenticationServices
+import Airbridge
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -25,7 +26,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //Start observing payment transaction updates
         IAPManager.shared.startObserving()
         
+        // Initialize Airbridge SDK
+        let option = AirbridgeOptionBuilder(name: "jotikfy", token: "deadbeefdeadbeefdeadbeefdeadbeef")
+            .build()
+        Airbridge.initializeSDK(option: option)
+        
+        // Handle deferred deeplink
+        let isHandled = Airbridge.handleDeferredDeeplink { url in
+            if let url = url {
+                // When the app is opened with an Airbridge deferred deeplink
+                // Show proper content using url (YOUR_SCHEME://...)
+                self.handleDeeplink(url: url)
+            }
+        }
+        
         return true
+    }
+    
+    func handleDeeplink(url: URL) {
+        // Handle the deeplink URL
+        // You can parse the URL and navigate to the appropriate screen or perform any other action
+        print("Handling deferred deeplink: \(url)")
+        
+        // Example: Extract referral ID from the URL
+        if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+           let queryItems = components.queryItems {
+            for queryItem in queryItems {
+                if queryItem.name == "referralId" {
+                    UserDefaults.standard.set(queryItem.value, forKey: "referralId")
+                    print("Referral ID: \(queryItem.value ?? "")")
+                    break
+                }
+            }
+        }
     }
     
     // MARK: UISceneSession Lifecycle
@@ -170,4 +203,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 }
-
