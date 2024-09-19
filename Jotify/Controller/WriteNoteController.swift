@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Mixpanel
 
 class WriteNoteController: ToolbarViewController, UITextViewDelegate {
     
@@ -94,6 +95,10 @@ class WriteNoteController: ToolbarViewController, UITextViewDelegate {
             field.text = UserDefaults.standard.string(forKey: "placeholder")
             
             AnalyticsManager.logEvent(named: "note_created", description: "note_created")
+            
+            /* Here's where we add Mixpanel event tracking */
+            Mixpanel.mainInstance().track(event: "add_note")
+            /* End of Mixpanel event tracking addition */
         }
         field.resignFirstResponder()
     }

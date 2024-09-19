@@ -10,6 +10,7 @@ import Blueprints
 import SwiftMessages
 import ViewAnimator
 import WidgetKit
+import Mixpanel
 
 class NoteCollectionController: UICollectionViewController {
     //update collection view when model changes
@@ -63,6 +64,16 @@ class NoteCollectionController: UICollectionViewController {
         cleanupOldNotes()
         
         NotificationCenter.default.addObserver(self, selector: #selector(pureDarkModeChanged(notification:)), name:NSNotification.Name(rawValue: "updatePureDarkMode"), object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        /* Here's where we add Mixpanel event tracking */
+        Mixpanel.mainInstance().track(event: "page_view", properties: [
+            "page_name": "Note Collection"
+        ])
+        /* End of Mixpanel event tracking addition */
     }
     
     override func viewDidDisappear(_ animated: Bool) {

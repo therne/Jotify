@@ -6,6 +6,7 @@
 //
 
 import FirebaseAuth
+import Mixpanel
 
 class AuthManager {
     
@@ -56,6 +57,11 @@ class AuthManager {
             UIApplication.shared.applicationIconBadgeNumber = 0
             //remove all pending reminders, when user logs out
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+            
+            /* Here's the added content */
+            // Reset Mixpanel SDK
+            Mixpanel.mainInstance().reset()
+            /* End of added content */
         }
         catch { print("User already logged out") }
     }
@@ -126,6 +132,10 @@ class AuthManager {
             // An error happened.
             completionHandler(false, error.localizedDescription)
           } else {
+            /* Here's the added content */
+            // Reset Mixpanel SDK
+            Mixpanel.mainInstance().reset()
+            /* End of added content */
             completionHandler(true, "Account successfully deleted.")
           }
         }

@@ -7,6 +7,7 @@
 
 import UIKit
 import UserNotifications
+import Mixpanel
 
 class ReminderController: UITableViewController, DatePickerDelegate, TimePickerDelegate {
     
@@ -204,6 +205,10 @@ class ReminderController: UITableViewController, DatePickerDelegate, TimePickerD
                 print("Reminder was succesfully created and uploaded to backend")
             }
         }
+        
+        /* Here's where we add Mixpanel event tracking */
+        Mixpanel.mainInstance().track(event: "set_reminder")
+        /* End of Mixpanel event tracking addition */
     }
     
     //removes reminder and resets all relevant variables
