@@ -8,6 +8,7 @@
 import Firebase
 import CoreData
 import AuthenticationServices
+import Mixpanel
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -24,6 +25,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //Start observing payment transaction updates
         IAPManager.shared.startObserving()
+        
+        // Initialize Mixpanel
+        Mixpanel.initialize(token: "c9e30f942625129799e00561b5a0d539", trackAutomaticEvents: true)
         
         return true
     }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Mixpanel
 
 class EditingController: ToolbarViewController, UITextViewDelegate {
     
@@ -36,6 +37,12 @@ class EditingController: ToolbarViewController, UITextViewDelegate {
         
         //disable swiping to create a new note when editing
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "disableSwipe"), object: nil)
+        
+        /* Here's where we add Mixpanel event tracking */
+        Mixpanel.mainInstance().track(event: "page_view", properties: [
+            "page_name": "Edit Note"
+        ])
+        /* End of Mixpanel event tracking addition */
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -121,6 +128,10 @@ class EditingController: ToolbarViewController, UITextViewDelegate {
         if field.text != initialContent {
             DataManager.updateNoteContent(content: field.text, uid: EditingData.currentNote.id) { success in
                 //handle success
+                
+                /* Here's where we add Mixpanel event tracking */
+                Mixpanel.mainInstance().track(event: "edit_note")
+                /* End of Mixpanel event tracking addition */
             }
         }
     }
@@ -204,6 +215,12 @@ class EditingController: ToolbarViewController, UITextViewDelegate {
         
         DataManager.updateNoteColor(color: color, uid: EditingData.currentNote.id) { success in
             //handle success here
+            
+            /* Here's where we add Mixpanel event tracking */
+            Mixpanel.mainInstance().track(event: "change_note_color", properties: [
+                "color": color
+            ])
+            /* End of Mixpanel event tracking addition */
         }
         
         colorOverride = ""

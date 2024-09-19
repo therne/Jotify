@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftUI
+import Mixpanel
 
 class AccountSettingsController: SettingsController {
     
@@ -79,6 +80,10 @@ class AccountSettingsController: SettingsController {
                         self.setRootViewController(duration: 0.4, vc: UIHostingController(rootView: LogInView()))
                     }))
                     self.present(alertController, animated: true, completion: nil)
+                    
+                    /* Here's where we add Mixpanel event tracking */
+                    Mixpanel.mainInstance().track(event: "user_logout")
+                    /* End of Mixpanel event tracking addition */
                 }))
                 self.present(alertController, animated: true, completion: nil)
             default:
@@ -132,6 +137,10 @@ class AccountSettingsController: SettingsController {
                                 let alertController = UIAlertController(title: "Success", message: "All notes successfully deleted.", preferredStyle: .alert)
                                 alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                                 self.present(alertController, animated: true, completion: nil)
+                                
+                                /* Here's where we add Mixpanel event tracking */
+                                Mixpanel.mainInstance().track(event: "delete_all_notes")
+                                /* End of Mixpanel event tracking addition */
                             } else {
                                 let alertController = UIAlertController(title: "Error", message: "There was an error deleting your notes. Please try again later.", preferredStyle: .alert)
                                 alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -164,6 +173,10 @@ class AccountSettingsController: SettingsController {
                                     self.setRootViewController(duration: 0.4, vc: UIHostingController(rootView: LogInView()))
                                 }))
                                 self.present(alertController, animated: true, completion: nil)
+                                
+                                /* Here's where we add Mixpanel event tracking */
+                                Mixpanel.mainInstance().track(event: "delete_account")
+                                /* End of Mixpanel event tracking addition */
                             } else {
                                 let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
                                 alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
